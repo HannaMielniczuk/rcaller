@@ -1,0 +1,46 @@
+Assume simple linear model :   Stay ~ Diet + Smoke + Diet:Smoke 
+The problem is to pass the dimension names in the matrix of coefficients (borders). 
+
+skrypt in R: (syntaks.txt)
+
+BaseFrame=read.csv("DietSmoke.txt") 
+modd<-glm(Stay ~ Diet + Smoke + Diet:Smoke , BaseFrame , family = gaussian) 
+coeff=summary(modd)$coef
+lista<-list(r1=coeff,r2=dimnames(coeff))
+ 
+results on RGui console:
+>lista        
+$r1
+                  Estimate Std. Error       t value  Pr(>|t|)
+(Intercept)   3.666667e+00   2.441159  1.502019e+00 0.1538496
+DietB         1.833333e+00   2.989797  6.131965e-01 0.5489321
+DietC         2.666667e+00   3.452321  7.724273e-01 0.4518611
+SmokeY        5.333333e+00   3.452321  1.544855e+00 0.1432147
+DietB:SmokeY -5.166667e+00   4.566991 -1.131306e+00 0.2756896
+DietC:SmokeY  2.756121e-15   4.882319  5.645107e-16 1.0000000
+
+$r2
+$r2[[1]]
+[1] "(Intercept)"  "DietB"        "DietC"        "SmokeY"       "DietB:SmokeY"
+[6] "DietC:SmokeY"
+
+$r2[[2]]
+[1] "Estimate"   "Std. Error" "t value"    "Pr(>|t|)" 
+
+On the RGui console objects (r1, r2) are seen. Object r2 is string array of dimension names.When'll put R syntax to Rcaller object r2 is not passed to the java. When instead of a list I put alone the object dimnames(coeff) is the same . 
+
+Java code:
+
+RCaller caller = new RCaller();
+caller.setRscriptExecutable("C:\\R\\R-3.1.2\\bin\\Rscript.exe");
+RCode code = new RCode();
+code.addRCode(syntaks);
+caller.setRCode(code);
+caller.runAndReturnResult("lista");
+System.out.println(caller.getParser().getNames()); 
+
+ Eclipse console shows  " []"
+
+I can add that another examples when  used list of objects   only some objects are seen. 
+
+ I will be gratefull for the request.
